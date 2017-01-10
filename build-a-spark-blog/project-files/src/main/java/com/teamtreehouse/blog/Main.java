@@ -34,14 +34,25 @@ public class Main {
             return new ModelAndView(null, "new.hbs");
         }, new HandlebarsTemplateEngine());
 
-        //Save data when creating new blog, redirects to detail.hbs
-        post("/detail", (req, res) ->{
+        //Save data when creating new blog, redirects to "/" if title and
+        //entry are not empty, otherwise, redirects to "/new"
+        post("/", (req, res) ->{
             String title=req.queryParams("title");
             String entry=req.queryParams("entry");
-            BlogEntry blog= new BlogEntry(title,entry);
-            blogList.addEntry(blog);
-            res.redirect("/detail");
+            if(!title.isEmpty() && !entry.isEmpty()){
+                BlogEntry blog= new BlogEntry(title,entry);
+                blogList.addEntry(blog);
+                res.redirect("/");
+            }else{
+                res.redirect("/new");
+            }
             return null;
+        });
+
+        get("/detail", (req, res) ->{
+            Map<String,Object> model=new HashMap<>();
+            model.put("detail",blogList.findEntryBySlug(req.params("slug")));
+            return new ModelAndView(model,"detail.hbs");
         });
 
 
