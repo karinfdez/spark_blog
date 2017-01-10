@@ -5,12 +5,14 @@ import java.util.Date;
 public class BlogEntry {
 
     private String title;
+    private String entry;
     private Date date;
 
 
-    public BlogEntry(String title) {
+    public BlogEntry(String title,String entry) {
         this.title = title;
-        date=new Date();
+        this.entry=entry;
+        this.date=new Date();
 
     }
 
@@ -21,6 +23,10 @@ public class BlogEntry {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getEntry() {
+        return entry;
     }
 
     @Override
