@@ -22,9 +22,11 @@ public class Main {
         staticFileLocation("/public");
         BlogDao blogList = new SimpleBlogDAO();
 
-
+        //Show a list of blogs
         get("/", (req, res) ->{
-            return new ModelAndView(null, "index.hbs");
+            Map<String,Object> model=new HashMap<>();
+            model.put("blogLists",blogList.findAllEntries());
+            return new ModelAndView(model, "index.hbs");
         }, new HandlebarsTemplateEngine());
 
 
@@ -41,12 +43,8 @@ public class Main {
             res.redirect("/detail");
             return null;
         });
-         //Show a specific blog
-        get("/detail", (req, res) ->{
-            Map<String,Object> model=new HashMap<>();
-            model.put("detail",blogList.findAllEntries());
-            return new ModelAndView(model, "detail.hbs");
-        }, new HandlebarsTemplateEngine());
+
+
     }
 }
 

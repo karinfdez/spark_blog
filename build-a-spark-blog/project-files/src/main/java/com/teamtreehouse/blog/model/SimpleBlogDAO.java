@@ -3,6 +3,7 @@ package com.teamtreehouse.blog.model;
 
 import com.teamtreehouse.blog.dao.BlogDao;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,14 @@ public class SimpleBlogDAO implements BlogDao {
         return new ArrayList<>(blogList);
     }
 
+    //Try to find a slug, and if it can't find it
+    //it will throw a new exception: NotFoundException.
     @Override
     public BlogEntry findEntryBySlug(String slug) {
-        return null;
+        return blogList.stream()
+                        .filter(blogEntry -> blogEntry.getSlug().equals(slug))
+                        .findFirst()
+                        .orElseThrow(NotFoundException::new);
     }
 }
 
