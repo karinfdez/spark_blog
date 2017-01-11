@@ -1,9 +1,11 @@
 package com.teamtreehouse.blog;
 
+import com.github.slugify.Slugify;
 import com.teamtreehouse.blog.dao.BlogDao;
 import com.teamtreehouse.blog.model.BlogEntry;
 import com.teamtreehouse.blog.model.SimpleBlogDAO;
 import spark.ModelAndView;
+import spark.Request;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
@@ -21,18 +23,14 @@ public class Main {
 
         staticFileLocation("/public");
         BlogDao blogList = new SimpleBlogDAO();
+        HandlebarsTemplateEngine templateEngine=new HandlebarsTemplateEngine();
 
         //Show a list of blogs
         get("/", (req, res) ->{
             Map<String,Object> model=new HashMap<>();
             model.put("blogLists",blogList.findAllEntries());
             return new ModelAndView(model, "index.hbs");
-        }, new HandlebarsTemplateEngine());
-
-
-        get("/new", (req,res) ->{
-            return new ModelAndView(null, "new.hbs");
-        }, new HandlebarsTemplateEngine());
+        }, templateEngine);
 
         //Save data when creating new blog, redirects to "/" if title and
         //entry are not empty, otherwise, redirects to "/new"
@@ -45,17 +43,32 @@ public class Main {
                 res.redirect("/");
             }else{
                 res.redirect("/new");
+//                setFlashMessage(req, "One of the fields were empty. Try again!");
             }
             return null;
         });
 
-        get("/detail", (req, res) ->{
+
+        get("/new", (req,res) ->{
+            return new ModelAndView(null, "new.hbs");
+        }, templateEngine);
+
+        //Show specific post using the slug
+
+        //associate the model with the detail.hbs template
+        //When user clicks on title, goes to "/detail/:slug"
+        //save with the key "detail", the object associated by the slug
+        //Now is ready to be used on detail.hbs template.
+        get("/detail/:slug", (req, res) ->{
             Map<String,Object> model=new HashMap<>();
             model.put("detail",blogList.findEntryBySlug(req.params("slug")));
             return new ModelAndView(model,"detail.hbs");
-        });
-
+        },templateEngine);
 
     }
+
+//    private static void setFlashMessage(Request req, String s) {
+//        req.session().attribute(FLASH_MESSAGE_KEY message)
+//    }
 }
 
