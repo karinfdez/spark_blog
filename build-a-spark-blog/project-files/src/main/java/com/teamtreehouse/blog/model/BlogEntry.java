@@ -2,12 +2,9 @@ package com.teamtreehouse.blog.model;
 
 import com.github.slugify.Slugify;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 public class BlogEntry {
 
@@ -16,6 +13,7 @@ public class BlogEntry {
     private LocalDateTime now;
     private String slug;
     private String dateFormat;
+    private List<Comment> listComments;
 
 
     public BlogEntry(String title,String entry) {
@@ -30,18 +28,19 @@ public class BlogEntry {
         Slugify slg = new Slugify();
         this.slug=slg.slugify(title);
         this.dateFormat = now.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm", Locale.ENGLISH));
-
-
-
+        listComments=new ArrayList<>();
     }
 
     public boolean addComment(Comment comment) {
-        // Store these comments!
-        return false;
+        return listComments.add(comment);
     }
 
     public String getDate() {
         return dateFormat;
+    }
+
+    public List<Comment> getListComments() {
+        return new ArrayList<>(listComments);
     }
 
     public String getTitle() {

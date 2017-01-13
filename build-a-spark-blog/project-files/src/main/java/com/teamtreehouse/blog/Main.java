@@ -3,9 +3,11 @@ package com.teamtreehouse.blog;
 import com.github.slugify.Slugify;
 import com.teamtreehouse.blog.dao.BlogDao;
 import com.teamtreehouse.blog.model.BlogEntry;
+import com.teamtreehouse.blog.model.Comment;
 import com.teamtreehouse.blog.model.SimpleBlogDAO;
 import spark.ModelAndView;
 import spark.Request;
+import spark.Response;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
@@ -65,10 +67,25 @@ public class Main {
             return new ModelAndView(model,"detail.hbs");
         },templateEngine);
 
+        //To save the comments on post
+        post ("/detail/:slug", (Request req, Response res) ->{
+            BlogEntry entry= blogList.findEntryBySlug(req.params("slug"));
+            String name=req.queryParams("name");
+            String comment=req.queryParams("comment");
+            Comment newComment= new Comment(name,comment);
+            entry.addComment(newComment);
+              for(Comment list:entry.getListComments()){
+                  System.out.println(list.getName());
+                  System.out.println(list.getComment());
+              }
+//            System.out.println(entry.getListComments().size());
+            res.redirect("/detail/"+req.params("slug"));
+            return null;
+        });
+
+
     }
 
-//    private static void setFlashMessage(Request req, String s) {
-//        req.session().attribute(FLASH_MESSAGE_KEY message)
-//    }
+
 }
 

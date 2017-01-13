@@ -8,4 +8,5 @@ public interface BlogDao {
     boolean addEntry(BlogEntry blogEntry);
     List<BlogEntry> findAllEntries();
     BlogEntry findEntryBySlug(String slug);
+
 }
