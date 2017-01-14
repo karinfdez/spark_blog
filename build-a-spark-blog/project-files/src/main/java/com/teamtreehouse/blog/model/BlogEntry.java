@@ -16,7 +16,20 @@ public class BlogEntry {
     private List<Comment> listComments;
 
 
-    public BlogEntry(String title,String entry) {
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+
+    }
+
+    public void setEntry(String entry) {
+        this.entry = entry;
+    }
+
+    public BlogEntry(String title, String entry) {
         this.title = title;
         this.entry=entry;
         now = LocalDateTime.now();

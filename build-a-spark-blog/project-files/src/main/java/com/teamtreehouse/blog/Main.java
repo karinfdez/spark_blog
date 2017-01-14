@@ -74,12 +74,33 @@ public class Main {
             String comment=req.queryParams("comment");
             Comment newComment= new Comment(name,comment);
             entry.addComment(newComment);
-              for(Comment list:entry.getListComments()){
-                  System.out.println(list.getName());
-                  System.out.println(list.getComment());
-              }
-//            System.out.println(entry.getListComments().size());
+//              for(Comment list:entry.getListComments()){
+//                  System.out.println(list.getName());
+//                  System.out.println(list.getComment());
+//              }
             res.redirect("/detail/"+req.params("slug"));
+            return null;
+        });
+
+        //Edit post
+        get("/detail/:slug/edit", (req, res) ->{
+            Map<String,Object> model=new HashMap<>();
+            model.put("editDetail",blogList.findEntryBySlug(req.params("slug")));
+            return new ModelAndView(model,"edit.hbs");
+        },templateEngine);
+
+        post ("/detail/:slug/edit", (Request req, Response res) ->{
+            Slugify slugify = new Slugify();
+            BlogEntry entry= blogList.findEntryBySlug(req.params("slug"));
+            String newTitle=req.queryParams("title");
+            String newText=req.queryParams("entry");
+            String newSlug=slugify.slugify(newTitle);
+            entry.setEntry(newText);
+            entry.setTitle(newTitle);
+            entry.setSlug(newSlug);
+            System.out.println(entry.getTitle());
+            System.out.println(entry.getEntry());
+            res.redirect("/detail/"+entry.getSlug());
             return null;
         });
 
