@@ -263,6 +263,12 @@ input[type=submit] {
 	margin-right: 5px;
 }
 
+.center-text{
+  display:block;
+  text-align:center;
+  border-bottom: none;
+}
+
 
 
 

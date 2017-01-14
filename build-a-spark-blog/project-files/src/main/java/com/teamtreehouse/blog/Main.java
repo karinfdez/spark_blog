@@ -26,12 +26,12 @@ public class Main {
         staticFileLocation("/public");
         BlogDao blogList = new SimpleBlogDAO();
         HandlebarsTemplateEngine templateEngine=new HandlebarsTemplateEngine();
+        Map<String,Object> modelIndex=new HashMap<>();
 
         //Show a list of blogs
         get("/", (req, res) ->{
-            Map<String,Object> model=new HashMap<>();
-            model.put("blogLists",blogList.findAllEntries());
-            return new ModelAndView(model, "index.hbs");
+            modelIndex.put("blogLists",blogList.findAllEntries());
+            return new ModelAndView(modelIndex, "index.hbs");
         }, templateEngine);
 
         //Save data when creating new blog, redirects to "/" if title and
@@ -94,15 +94,31 @@ public class Main {
             BlogEntry entry= blogList.findEntryBySlug(req.params("slug"));
             String newTitle=req.queryParams("title");
             String newText=req.queryParams("entry");
-            String newSlug=slugify.slugify(newTitle);
-            entry.setEntry(newText);
-            entry.setTitle(newTitle);
-            entry.setSlug(newSlug);
-            System.out.println(entry.getTitle());
-            System.out.println(entry.getEntry());
-            res.redirect("/detail/"+entry.getSlug());
+            if (!newTitle.isEmpty() && !newText.isEmpty()) {
+                String newSlug=slugify.slugify(newTitle);
+                entry.setEntry(newText);
+                entry.setTitle(newTitle);
+                entry.setSlug(newSlug);
+                res.redirect("/detail/"+entry.getSlug());
+            }else{
+                res.redirect("/detail/"+entry.getSlug()+"/edit");
+            }
             return null;
         });
+
+        //Delete blog entry
+        post("/detail/:slug/delete", (req, res) -> {
+            String slug=req.params("slug");
+            BlogEntry entry= blogList.findEntryBySlug(slug);
+            blogList.removeBlog(entry);
+            res.redirect("/");
+            return "Blog with slug '" + slug + "' was deleted";
+
+        });
+
+//        post("/sign-in", (req,res) -> {
+//
+//        });
 
 
     }

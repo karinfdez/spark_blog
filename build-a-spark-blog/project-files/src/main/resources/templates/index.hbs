@@ -14,6 +14,11 @@
                 <article>
                     <h2><a href="/detail/{{slug}}">{{title}}</a></h2>
                     <time datetime="2016-01-31 1:00">{{date}}</time>
+                    <form onsubmit="confirm('Are you sure you want to delete the following blog entry?')" action="/detail/{{slug}}/delete" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="link center-text">Delete</button>
+                    </form>
+
                 </article>
             {{/each}}
         </div>
