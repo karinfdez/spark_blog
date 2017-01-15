@@ -269,6 +269,16 @@ input[type=submit] {
   border-bottom: none;
 }
 
+  #flash-message{
+        text-align:center;
+        background-color: #2c89ba;
+        border-radius: 5px;
+        color: #fff;
+        display: block;
+        font-size: 14px;
+        padding: 10px 20px;
+   }
+
 
 
 

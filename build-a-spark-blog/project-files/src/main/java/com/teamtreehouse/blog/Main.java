@@ -4,6 +4,7 @@ import com.github.slugify.Slugify;
 import com.teamtreehouse.blog.dao.BlogDao;
 import com.teamtreehouse.blog.model.BlogEntry;
 import com.teamtreehouse.blog.model.Comment;
+import com.teamtreehouse.blog.model.NotFoundException;
 import com.teamtreehouse.blog.model.SimpleBlogDAO;
 import spark.ModelAndView;
 import spark.Request;
@@ -11,9 +12,7 @@ import spark.Response;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static spark.Spark.*;
 
@@ -21,6 +20,7 @@ import static spark.Spark.*;
  * Created by karinfernandez on 1/8/17.
  */
 public class Main {
+    private static final String FLASH_MESSAGE_KEY = "flash_message";
     public static void main(String[] args) {
 
         staticFileLocation("/public");
@@ -31,6 +31,7 @@ public class Main {
         //Show a list of blogs
         get("/", (req, res) ->{
             modelIndex.put("blogLists",blogList.findAllEntries());
+            modelIndex.put("flashMessage",captureFlashMessage(req));
             return new ModelAndView(modelIndex, "index.hbs");
         }, templateEngine);
 
@@ -110,10 +111,19 @@ public class Main {
         post("/detail/:slug/delete", (req, res) -> {
             String slug=req.params("slug");
             BlogEntry entry= blogList.findEntryBySlug(slug);
-            blogList.removeBlog(entry);
+            if (blogList.removeBlog(entry)){
+                setFlashMessage(req, "Blog "+entry.getTitle()+"was removed successfully");
+            }else{
+                setFlashMessage(req, "Blog couldn't be removed");
+            }
             res.redirect("/");
-            return "Blog with slug '" + slug + "' was deleted";
+            return null;
+        });
 
+        exception(NotFoundException.class,(exc, req,res) ->{
+            res.status(404);
+            String html=templateEngine.render(new ModelAndView(null,"not-found.hbs"));
+            res.body(html);
         });
 
 //        post("/sign-in", (req,res) -> {
@@ -123,6 +133,26 @@ public class Main {
 
     }
 
+    private static void setFlashMessage(Request req, String message) {
+        req.session().attribute(FLASH_MESSAGE_KEY, message);
+    }
 
+    private static String getFlashMessage(Request req) {
+        if (req.session(false) == null) {
+            return null;
+        }
+        if (!req.session().attributes().contains(FLASH_MESSAGE_KEY)) {
+            return null;
+        }
+        return (String) req.session().attribute(FLASH_MESSAGE_KEY);
+    }
+
+    private static String captureFlashMessage(Request req) {
+        String message = getFlashMessage(req);
+        if (message != null) {
+            req.session().removeAttribute(FLASH_MESSAGE_KEY);
+        }
+        return message;
+    }
 }
 

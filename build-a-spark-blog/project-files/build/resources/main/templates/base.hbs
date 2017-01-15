@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
+    {{#if flashMessage}}
+         <p id="flash-message">{{ flashMessage }}</p>
+    {{/if}}
 {{/block}}
 {{#block "content"}}{{/block}}
 {{#block "footer"}}
