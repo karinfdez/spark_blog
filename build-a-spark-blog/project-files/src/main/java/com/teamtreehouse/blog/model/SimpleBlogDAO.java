@@ -41,5 +41,9 @@ public class SimpleBlogDAO implements BlogDao {
     public boolean removeBlog(BlogEntry entry) {
         return blogList.remove (entry);
     }
+
+    public int getSizeOfListBlogs(){
+        return blogList.size();
+    }
 }
 

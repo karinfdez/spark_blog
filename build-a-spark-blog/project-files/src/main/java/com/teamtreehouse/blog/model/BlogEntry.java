@@ -13,6 +13,7 @@ public class BlogEntry {
     private LocalDateTime now;
     private String slug;
     private String dateFormat;
+    private String category;
     private List<Comment> listComments;
 
 
@@ -25,11 +26,16 @@ public class BlogEntry {
 
     }
 
+    public void setCategory(String category) {
+        this.category=category;
+
+    }
+
     public void setEntry(String entry) {
         this.entry = entry;
     }
 
-    public BlogEntry(String title, String entry) {
+    public BlogEntry(String title, String entry, String category) {
         this.title = title;
         this.entry=entry;
         now = LocalDateTime.now();
@@ -40,12 +46,18 @@ public class BlogEntry {
         int minute = now.getMinute();
         Slugify slg = new Slugify();
         this.slug=slg.slugify(title);
+        this.category=category;
         this.dateFormat = now.format(DateTimeFormatter.ofPattern("MMMM dd, yyyy HH:mm", Locale.ENGLISH));
         listComments=new ArrayList<>();
     }
 
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
     public boolean addComment(Comment comment) {
         return listComments.add(comment);
+
     }
 
     public String getDate() {
@@ -64,6 +76,9 @@ public class BlogEntry {
         return entry;
     }
 
+    public String getCategory() {
+        return category;
+    }
 
     @Override
     public boolean equals(Object o) {

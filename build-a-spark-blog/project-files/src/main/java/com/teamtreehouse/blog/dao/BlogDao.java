@@ -9,5 +9,6 @@ public interface BlogDao {
     List<BlogEntry> findAllEntries();
     BlogEntry findEntryBySlug(String slug);
      boolean removeBlog(BlogEntry entry);
+     int getSizeOfListBlogs();
 
 }
