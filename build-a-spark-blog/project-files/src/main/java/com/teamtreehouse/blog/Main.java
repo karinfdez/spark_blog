@@ -100,7 +100,10 @@ public class Main {
             String title=req.queryParams("title");
             String entry=req.queryParams("entry");
             String category=req.queryParams("category");
-            if(!title.isEmpty() && !entry.isEmpty() && !category.isEmpty()){
+            if(category.isEmpty()){
+                category="Uncategorized";
+            }
+            if(!title.isEmpty() && !entry.isEmpty()){
                 BlogEntry blog= new BlogEntry(title,entry,category);
                 blogList.addEntry(blog);
                 req.attribute("password");
@@ -187,10 +190,14 @@ public class Main {
             String newTitle=req.queryParams("title");
             String newText=req.queryParams("entry");
             String newCategory=req.queryParams("category");
-            if (!newTitle.isEmpty() && !newText.isEmpty() && !newCategory.isEmpty()) {
+            if (newCategory.isEmpty()){
+                newCategory="Uncategorized";
+            }
+            if (!newTitle.isEmpty() && !newText.isEmpty()) {
                 String newSlug=slugify.slugify(newTitle);
                 entry.setEntry(newText);
                 entry.setTitle(newTitle);
+                entry.setCategory(newCategory);
                 entry.setSlug(newSlug);
                 res.redirect("/detail/"+entry.getSlug());
             }else{
